@@ -66,8 +66,21 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="pb-20 text-center text-[10px] tracking-widest text-gray-300 uppercase">
-        © 2026 Once, Again Family Archive - Taguig, Philippines
+      <footer className="pb-20 text-center px-6">
+        <div className="w-12 h-[1px] bg-gray-200 mx-auto mb-8"></div>
+        <div className="space-y-3">
+          <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-light">
+            Global Family Archive Project
+          </p>
+          <p className="text-[11px] tracking-[0.2em] text-gray-300 uppercase">
+            © 2026 <span className="text-gray-500 font-medium font-sans italic">Once, Again</span> 
+            <span className="mx-2">|</span> 
+            ROOTS IN <span className="text-gray-500 font-medium">KOREA</span>
+          </p>
+          <p className="text-[9px] tracking-widest text-gray-200 uppercase pt-2 font-sans">
+            www.yoo-family.com
+          </p>
+        </div>
       </footer>
     </main>
   );
