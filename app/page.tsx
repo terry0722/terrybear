@@ -5,11 +5,13 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-8 h-20 flex justify-between items-center">
           <h1 className="text-lg font-light tracking-[0.2em] uppercase">Our Legacy</h1>
-          <div className="flex gap-8 text-[11px] tracking-widest uppercase font-medium text-gray-400">
+          <div className="flex gap-6 text-[11px] tracking-widest uppercase font-medium text-gray-400">
             <a href="/" className="hover:text-black transition">Home</a>
             <a href="/story" className="hover:text-black transition">Story</a>
             <a href="/gallery" className="hover:text-black transition">Gallery</a>
-            <a href="/message" className="hover:text-black transition">Message</a>
+            <a href="/artgallery" className="hover:text-black transition">Art Gallery</a>
+            <a href="/travel" className="hover:text-black transition">Travel</a>
+            <a href="/guestbook" className="hover:text-black transition">Guestbook</a>
           </div>
         </div>
       </nav>
