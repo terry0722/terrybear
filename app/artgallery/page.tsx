@@ -9,7 +9,6 @@ const artworks = [
 ];
 
 export default function ArtGalleryPage() {
-  // 팝업에 보여줄 선택된 이미지 상태 관리
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
@@ -22,7 +21,6 @@ export default function ArtGalleryPage() {
           {artworks.map((art) => (
             <div key={art.id} className="group cursor-pointer" onClick={() => setSelectedImage(art.src)}>
               <div className="aspect-[4/5] overflow-hidden bg-gray-50 border border-gray-100">
-                {/* grayscale 클래스를 제거하고 hover 시 약간의 밝기 조절만 추가했습니다. */}
                 <img 
                   src={art.src} 
                   alt={art.title} 
@@ -35,11 +33,11 @@ export default function ArtGalleryPage() {
         </div>
       </div>
 
-      {/* 팝업 모달 (이미지가 선택되었을 때만 표시) */}
+      {/* 팝업 모달 */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 transition-opacity duration-300"
-          onClick={() => setSelectedImage(null)} // 배경 클릭 시 닫기
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setSelectedImage(null)}
         >
           <button 
             className="absolute top-10 right-10 text-white text-2xl font-light hover:text-gray-400 transition-colors"
@@ -50,5 +48,12 @@ export default function ArtGalleryPage() {
           <div className="relative max-w-4xl max-h-[80vh] overflow-hidden">
             <img 
               src={selectedImage} 
-              alt="Enlarged view" 
-              className="w-full h-full object-contain shadow-2xl animate-in zoom-in-95 duration-
+              alt="Enlarged" 
+              className="w-full h-full object-contain shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
