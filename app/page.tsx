@@ -33,10 +33,10 @@ export default function Home() {
       {/* 3. 가족 카드 섹션 (기존의 세련된 흑백 스타일 복구) */}
       <section className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { name: "Papa", krName: "아빠", role: "Designer", img: "/images/papa.jpeg" },
-          { name: "Mama", krName: "엄마", role: "Marketer", img: "/images/mama.jpeg" },
-          { name: "Daughter", krName: "우리딸", role: "Student", img: "/images/daughter.jpeg" },
-          { name: "Dog", krName: "댕댕이", role: "Guardian", img: "/images/dog.jpeg" }
+          { name: "Papa", krName: "아빠", role: "Designer", img: "papa.jpeg" },
+          { name: "Mama", krName: "엄마", role: "Marketer", img: "mama.jpeg" },
+          { name: "Daughter", krName: "딸", role: "Student", img: "daughter.jpeg" },
+          { name: "Dog", krName: "댕댕이", role: "Guardian", img: "dog.jpeg" }
         ].map((member) => (
           <div key={member.name} className="group relative overflow-hidden bg-gray-100 aspect-[3/4] rounded-sm">
             <img 
