@@ -12,6 +12,7 @@ export default function Home() {
             <a href="/artgallery" className="hover:text-black transition">Art Gallery</a>
             <a href="/travel" className="hover:text-black transition">Travel</a>
             <a href="/guestbook" className="hover:text-black transition">Guestbook</a>
+            <a href="/login" className="text-black font-bold border-b border-black pb-0.5">Login</a>
           </div>
         </div>
       </nav>
