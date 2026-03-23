@@ -3,9 +3,9 @@ export default function Home() {
     <main className="min-h-screen bg-[#fcfcfc] text-[#333] font-sans">
       {/* 1. 글로벌 가족을 위한 내비게이션 */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-8 h-20 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 md:gap-0">
           <h1 className="text-lg font-light tracking-[0.2em] uppercase">Our Legacy</h1>
-          <div className="flex gap-6 text-[11px] tracking-widest uppercase font-medium text-gray-400">
+          <div className="flex gap-4 md:gap-6 text-[9px] md:text-[11px] tracking-widest uppercase font-medium text-gray-400 overflow-x-auto w-full md:w-auto justify-center whitespace-nowrap pb-2 md:pb-0">
             <a href="/" className="hover:text-black transition">Home</a>
             <a href="/story" className="hover:text-black transition">Story</a>
             <a href="/gallery" className="hover:text-black transition">Gallery</a>
@@ -55,11 +55,11 @@ export default function Home() {
       </section>
 
       {/* 4. 감성적인 한/영 혼용 메시지 섹션 */}
-      <section className="max-w-3xl mx-auto px-6 py-40 text-center">
-        <div className="inline-block border-l-2 border-black pl-8 text-left">
-          <h3 className="text-2xl font-extralight text-gray-800 leading-relaxed">
+      <section className="max-w-3xl mx-auto px-6 py-24 md:py-40 text-center">
+        <div className="inline-block border-l-2 border-black pl-6 md:pl-8 text-left">
+          <h3 className="text-xl md:text-2xl font-extralight text-gray-800 leading-relaxed">
             "We believe that <br /> 
-            <span className="bg-black text-white px-2 not-italic">가장 소중한 것은 늘 가까이에</span> <br /> 
+            <span className="bg-black text-white px-2 not-italic inline-block my-1">가장 소중한 것은 늘 가까이에</span> <br /> 
             resides in the simplest moments."
           </h3>
           <p className="mt-10 text-xs text-gray-400 tracking-[0.2em] uppercase">
