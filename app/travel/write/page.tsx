@@ -71,7 +71,7 @@ export default function TravelWritePage() {
 
     if (error) {
       console.error(error);
-      alert('오류가 발생했습니다. Table(travel_posts)이 잘 세팅되었는지 확인해주세요.');
+      alert(`오류 발생 원인: ${error.message} \n\n자세한 정보: ${error.details || ''} \n\nTable(travel_posts) 세팅에서 오타나 RLS 설정을 다시 확인해주세요.`);
     } else {
       router.push('/travel');
     }
