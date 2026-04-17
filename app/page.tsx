@@ -1,64 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
-
 export default function Home() {
-  const [user, setUser] = useState<any>(null);
-  const router = useRouter();
+  // 인증 로직은 Global Header로 이동됨
 
-  // 1. 로그인 상태 확인 및 감지 (실시간 반영)
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    getUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // 2. 로그아웃 함수
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      alert('로그아웃 되었습니다.');
-      router.refresh();
-    }
-  };
+  // 2. 로그아웃 함수 등은 Header.tsx로 이동 완료
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] text-[#333] font-sans">
-      {/* 내비게이션 바: Gallery 메뉴 복구 및 로그인 상태 표시 */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 md:gap-0">
-          <h1 className="text-lg font-light tracking-[0.2em] uppercase text-black">Our Legacy</h1>
-          <div className="flex gap-4 md:gap-6 text-[9px] md:text-[11px] tracking-widest uppercase font-medium text-gray-400 overflow-x-auto w-full md:w-auto justify-center whitespace-nowrap pb-2 md:pb-0 italic">
-            <a href="/" className="hover:text-black transition">Home</a>
-            <a href="/story" className="hover:text-black transition">Story</a>
-            <a href="/gallery" className="hover:text-black transition font-semibold text-gray-600">Gallery</a>
-            <a href="/artgallery" className="hover:text-black transition">Art Gallery</a>
-            <a href="/travel" className="hover:text-black transition">Travel</a>
-            <a href="/guestbook" className="hover:text-black transition">Guestbook</a>
-            
-            {user ? (
-              <div className="flex items-center gap-4 ml-2">
-                <span className="text-black font-bold border-b border-yellow-400 lowercase italic px-1">
-                   {user.email?.split('@')[0]}
-                </span>
-                <button onClick={handleLogout} className="hover:text-black transition underline decoration-gray-200">Logout</button>
-              </div>
-            ) : (
-              <a href="/login" className="hover:text-black transition border-b border-black pb-0.5 ml-2">Login</a>
-            )}
-          </div>
-        </div>
-      </nav>
+    <main className="w-full font-sans">
 
       {/* 헤드라인 섹션 */}
       <section className="pt-44 pb-20 px-6 text-center">

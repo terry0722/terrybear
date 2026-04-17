@@ -1,44 +1,65 @@
-'use client'; // 🔽 1. 역동적인 기능을 위해 이 문구가 필수입니다!
+'use client';
 
-import { useState } from 'react'; // 🔽 2. 상태 관리를 위한 도구를 가져옵니다.
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import PhotoUpload from '@/components/PhotoUpload';
 
 export default function GalleryPage() {
-  // --- 데이터 정의 (유지) ---
-  const photos = [
+  const [user, setUser] = useState<any>(null);
+  
+  // 로그인 상태 파악 (사진 업로드 버튼 표시용)
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+  }, []);
+
+  const initialPhotos = [
     { src: "/family.jpeg", title: "우리의 주말", desc: "필리핀의 맑은 오후" },
     { src: "/daughter.jpeg", title: "작은 보물", desc: "웃음이 예쁜 우리 딸" },
     { src: "/dog.jpeg", title: "든든한 친구", desc: "낮잠 자는 댕댕이" },
     { src: "/papa.jpeg", title: "아빠의 시선", desc: "카메라 뒤의 기록" },
     { src: "/mama.jpeg", title: "엄마의 미소", desc: "행복한 순간" },
-    { src: "/daughter2.jpeg", title: "성장 기록", desc: "하루하루가 소중해" }, // 스펠링 수정 완료!
+    { src: "/daughter2.jpeg", title: "성장 기록", desc: "하루하루가 소중해" },
   ];
 
-  // 🔽 3. [상태 관리] 현재 선택된 사진이 무엇인지 기억하는 변수입니다.
+  const [photos, setPhotos] = useState(initialPhotos);
   const [selectedPhoto, setSelectedPhoto] = useState<null | typeof photos[0]>(null);
 
+  // 업로드 성공 시 사진 목록 최상단에 붙이기
+  const handleUploadSuccess = (newUrl: string) => {
+    const newPhoto = {
+      src: newUrl,
+      title: "방금 올린 사진",
+      desc: "우리의 새로운 이야기",
+    };
+    setPhotos([newPhoto, ...photos]);
+  };
+
   return (
-    <main className="min-h-screen bg-[#f8f7f4] py-24 px-6 relative">
+    <main className="min-h-screen bg-[#fcfcfc] dark:bg-[#111111] transition-colors duration-300 py-12 px-6 relative">
       <div className="max-w-6xl mx-auto">
-        {/* 헤더 (유지) */}
-        <div className="mb-16 text-center">
-          <a href="/" className="text-[10px] tracking-[0.3em] uppercase text-gray-400 hover:text-black transition">Back to Home</a>
-          <h1 className="text-3xl font-light mt-6 tracking-tight">가족 사진첩</h1>
-          <div className="w-8 h-[1px] bg-gray-300 mx-auto mt-6"></div>
+        <div className="mb-12 text-center">
+          <h1 className="text-3xl font-light tracking-tight text-black dark:text-white">가족 사진첩</h1>
+          <div className="w-8 h-[1px] bg-gray-300 dark:bg-gray-700 mx-auto mt-6"></div>
         </div>
+
+        {/* 로그인한 사용자만 보이는 업로드 컴포넌트 */}
+        {user && <PhotoUpload onUploadSuccess={handleUploadSuccess} />}
 
         {/* 갤러리 그리드 */}
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
           {photos.map((photo, index) => (
             <div 
               key={index} 
-              // 🔽 4. [기능 추가] 클릭하면 이 사진을 '선택된 사진'으로 지정합니다.
               onClick={() => setSelectedPhoto(photo)}
-              className="break-inside-avoid group relative overflow-hidden bg-white rounded-xl shadow-sm transition-all duration-500 hover:shadow-xl cursor-pointer" // cursor-pointer 추가
+              // 순차적인 애니메이션 지연(delay) 부여 및 클래스 적용
+              style={{ animationDelay: `${index * 0.1}s` }}
+              className="animate-fade-in-up break-inside-avoid group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
             >
               <img 
                 src={photo.src} 
                 alt={photo.title}
                 className="w-full h-auto object-cover transition duration-700 group-hover:scale-105"
+                onError={(e) => { (e.target as any).src = 'https://via.placeholder.com/800x600?text=Photo' }}
               />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 text-white">
                 <p className="text-[10px] tracking-widest uppercase mb-1 opacity-80">{photo.desc}</p>
