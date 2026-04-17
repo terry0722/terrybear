@@ -28,22 +28,26 @@ export default function GalleryPage() {
     const fetchStoragePhotos = async () => {
       const { data, error } = await supabase.storage.from('gallery').list();
       
-      if (data && !error) {
-        // 숨김 파일(.emptyFolderPlaceholder 등)을 제거하고, 사진 정보 구성
+      if (error) {
+        console.error("스토리지 사진 로드 오류:", error);
+        return;
+      }
+
+      if (data) {
+        // 숨김 파일이나 빈 폴더 placeholder를 제외
         const uploadedPhotos = data
-          .filter(file => file.name !== '.emptyFolderPlaceholder' && file.id)
+          .filter(file => file.name && file.name !== '.emptyFolderPlaceholder')
           .map(file => {
             const publicUrl = supabase.storage.from('gallery').getPublicUrl(file.name).data.publicUrl;
             return {
               src: publicUrl,
-              title: "가족 추억",
-              desc: "방금 전 업로드",
+              title: "Family Memory",
+              desc: "최근 업로드 됨",
             };
           })
-          // 최신 사진이 위로 오도록 역순 정렬하거나 파일 생성일 기준 정렬
+          // 최신 사진이 위로 오도록 이름 또는 생성일 기준 정렬
           .sort((a, b) => (a.src > b.src ? -1 : 1));
 
-        // 하드코딩된 사진들 앞에 스토리지 사진들을 합침
         setPhotos([...uploadedPhotos, ...initialPhotos]);
       }
     };
