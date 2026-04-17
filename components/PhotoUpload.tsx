@@ -5,10 +5,11 @@ import { supabase } from '@/lib/supabase';
 
 interface PhotoUploadProps {
   bucketName?: string; // 업로드할 스토리지 폴더 이름 (기본값: 'gallery')
+  folderPath?: string; // 버킷 내 하위 폴더 경로 지정 (예: 'singapore')
   onUploadSuccess: (url: string) => void;
 }
 
-export default function PhotoUpload({ bucketName = 'gallery', onUploadSuccess }: PhotoUploadProps) {
+export default function PhotoUpload({ bucketName = 'gallery', folderPath = '', onUploadSuccess }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +22,8 @@ export default function PhotoUpload({ bucketName = 'gallery', onUploadSuccess }:
       // 파일명 깨짐 방지: 시간 + 랜덤 문자열로 변환 (ext 추출)
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      // folderPath가 존재하면 'folder/file.jpg' 형태로 경로 생성
+      const filePath = folderPath ? `${folderPath}/${fileName}` : fileName;
 
       // 1. Supabase Storage 에 업로드 (동적 버킷 이름)
       const { error: uploadError } = await supabase.storage
