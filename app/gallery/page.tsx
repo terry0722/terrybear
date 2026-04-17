@@ -74,7 +74,7 @@ export default function GalleryPage() {
         </div>
 
         {/* 로그인한 사용자만 보이는 업로드 컴포넌트 */}
-        {user && <PhotoUpload onUploadSuccess={handleUploadSuccess} />}
+        {user && <PhotoUpload bucketName="gallery" onUploadSuccess={handleUploadSuccess} />}
 
         {/* 갤러리 그리드 */}
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">

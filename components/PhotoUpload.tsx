@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 interface PhotoUploadProps {
+  bucketName?: string; // 업로드할 스토리지 폴더 이름 (기본값: 'gallery')
   onUploadSuccess: (url: string) => void;
 }
 
-export default function PhotoUpload({ onUploadSuccess }: PhotoUploadProps) {
+export default function PhotoUpload({ bucketName = 'gallery', onUploadSuccess }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,9 +23,9 @@ export default function PhotoUpload({ onUploadSuccess }: PhotoUploadProps) {
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      // 1. Supabase Storage 에 업로드 (버킷 이름: 'gallery')
+      // 1. Supabase Storage 에 업로드 (동적 버킷 이름)
       const { error: uploadError } = await supabase.storage
-        .from('gallery')
+        .from(bucketName)
         .upload(filePath, file);
 
       if (uploadError) {
@@ -32,9 +33,9 @@ export default function PhotoUpload({ onUploadSuccess }: PhotoUploadProps) {
       }
 
       // 2. 업로드된 이미지의 Public URL 가져오기
-      const { data } = supabase.storage.from('gallery').getPublicUrl(filePath);
+      const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath);
 
-      // 3. 부모 컴포넌트(GalleryPage)에 사진 전달
+      // 3. 부모 컴포넌트에 사진 전달
       if (data?.publicUrl) {
         onUploadSuccess(data.publicUrl);
         alert('사진이 성공적으로 업로드되었습니다! 🎉');
@@ -42,7 +43,7 @@ export default function PhotoUpload({ onUploadSuccess }: PhotoUploadProps) {
 
     } catch (error) {
       console.error('업로드 실패:', error);
-      alert('업로드에 실패했습니다. (gallery 버킷이 존재하는지 확인해주세요)');
+      alert(`업로드에 실패했습니다. (${bucketName} 버킷의 활성 상태와 권한(Policies)을 확인해주세요)`);
     } finally {
       setUploading(false);
       // input 초기화
