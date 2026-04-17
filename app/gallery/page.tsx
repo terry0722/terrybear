@@ -6,11 +6,6 @@ import PhotoUpload from '@/components/PhotoUpload';
 
 export default function GalleryPage() {
   const [user, setUser] = useState<any>(null);
-  
-  // 로그인 상태 파악 (사진 업로드 버튼 표시용)
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-  }, []);
 
   const initialPhotos = [
     { src: "/family.jpeg", title: "우리의 주말", desc: "필리핀의 맑은 오후" },
@@ -22,9 +17,41 @@ export default function GalleryPage() {
   ];
 
   const [photos, setPhotos] = useState(initialPhotos);
-  const [selectedPhoto, setSelectedPhoto] = useState<null | typeof photos[0]>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<null | typeof initialPhotos[0]>(null);
 
-  // 업로드 성공 시 사진 목록 최상단에 붙이기
+  // 로그인 상태 및 Storage에 업로드된 사진 불러오기
+  useEffect(() => {
+    // 1. 유저 상태 확인
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+
+    // 2. Storage에서 'gallery' 버킷의 모든 업로드 사진 불러오기
+    const fetchStoragePhotos = async () => {
+      const { data, error } = await supabase.storage.from('gallery').list();
+      
+      if (data && !error) {
+        // 숨김 파일(.emptyFolderPlaceholder 등)을 제거하고, 사진 정보 구성
+        const uploadedPhotos = data
+          .filter(file => file.name !== '.emptyFolderPlaceholder' && file.id)
+          .map(file => {
+            const publicUrl = supabase.storage.from('gallery').getPublicUrl(file.name).data.publicUrl;
+            return {
+              src: publicUrl,
+              title: "가족 추억",
+              desc: "방금 전 업로드",
+            };
+          })
+          // 최신 사진이 위로 오도록 역순 정렬하거나 파일 생성일 기준 정렬
+          .sort((a, b) => (a.src > b.src ? -1 : 1));
+
+        // 하드코딩된 사진들 앞에 스토리지 사진들을 합침
+        setPhotos([...uploadedPhotos, ...initialPhotos]);
+      }
+    };
+
+    fetchStoragePhotos();
+  }, []);
+
+  // 업로드 성공 시 사진 목록 최상단에 하나 붙이기 (새로고침 전 즉각 반영)
   const handleUploadSuccess = (newUrl: string) => {
     const newPhoto = {
       src: newUrl,
