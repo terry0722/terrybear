@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { Lock, Unlock, Key, Plus, FileText, Camera, Palette, CheckCircle } from "lucide-react";
-import { Article, Artwork, TravelLog } from "../types";
+import { Article, Artwork, TravelLog, DESTINATION_MAP } from "../types";
 
 interface AdminViewProps {
   isAdmin: boolean;
@@ -42,7 +42,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   // Travel states
   const [travelTitle, setTravelTitle] = useState("");
-  const [travelDestination, setTravelDestination] = useState("MANILA, PH");
+  const [travelDestination, setTravelDestination] = useState("SEOUL, KR");
   const [travelDate, setTravelDate] = useState("");
   const [travelDesc, setTravelDesc] = useState("");
   const [travelImage, setTravelImage] = useState("");
@@ -67,7 +67,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
       setErrorMsg("");
       setPasscode("");
     } else {
-      setErrorMsg("Incorrect secret passcode. Hints: 1234 or onceagain");
+      setErrorMsg("암호가 올바르지 않습니다. (비밀번호 힌트: 1234 또는 onceagain)");
     }
   };
 
@@ -94,7 +94,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setBlogExcerpt("");
     setBlogContent("");
     setBlogImage("");
-    triggerSuccessPopup("✓ New Chronicle Published to Papa's Study!");
+    triggerSuccessPopup("✓ 아빠의 서재에 일지가 게시되었습니다! (New Chronicle Published to Papa's Study!)");
   };
 
   const handlePublishArt = (e: React.FormEvent) => {
@@ -110,7 +110,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
     setArtTitle("");
     setArtImage("");
-    triggerSuccessPopup("✓ New Artwork Added to Daughter's Collection!");
+    triggerSuccessPopup("✓ 딸의 갤러리에 작품이 추가되었습니다! (New Artwork Added to Daughter's Collection!)");
   };
 
   const handlePublishTravel = (e: React.FormEvent) => {
@@ -129,7 +129,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setTravelDate("");
     setTravelDesc("");
     setTravelImage("");
-    triggerSuccessPopup("✓ New Travel Log Added into Mama's Journal!");
+    triggerSuccessPopup("✓ 엄마의 여정에 여행기가 기록되었습니다! (New Travel Log Added into Mama's Journal!)");
   };
 
   if (!isAdmin) {
@@ -142,9 +142,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
           </div>
 
           <div className="space-y-2">
-            <h1 className="font-serif text-2xl text-[#18241b] dark:text-[#f5ece5]">Private Storage Chest</h1>
+            <h1 className="font-serif text-2xl text-[#18241b] dark:text-[#f5ece5]">Private Storage Chest / 가족 보관함</h1>
             <p className="font-serif text-xs text-[#18241b]/60 dark:text-[#f5ece5]/60 italic">
-              Access is reserved exclusively for family curators (Papa, Mama, Daughter) to register documents, art, or travel logs.
+              가족 큐레이터(아빠, 엄마, 딸) 전용 공간입니다. 서재 일지, 미술 작품, 여행 기록을 등록할 수 있습니다.
             </p>
           </div>
 
@@ -152,7 +152,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <div className="relative">
               <input
                 type="password"
-                placeholder="Enter Family Passcode..."
+                placeholder="가족 암호 입력 (Family Passcode)..."
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 required
@@ -172,15 +172,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
               className="w-full bg-[#18241b] dark:bg-[#e2a265] hover:bg-[#25362a] dark:hover:bg-[#f5ece5] text-white dark:text-[#1c1814] py-3 rounded font-sans text-xs tracking-widest font-bold flex items-center justify-center space-x-2 cursor-pointer transition-colors"
             >
               <Unlock size={14} />
-              <span>UNLOCK STORAGE CHEST</span>
+              <span>보관함 열기 (UNLOCK STORAGE CHEST)</span>
             </button>
           </form>
 
           <div className="border-t border-[#18241b]/10 dark:border-[#f5ece5]/10 pt-4 text-left">
-            <h4 className="font-sans text-[10px] tracking-wider text-[#924c0a] dark:text-[#e2a265] font-bold uppercase mb-1">Passcode Guidance</h4>
+            <h4 className="font-sans text-[10px] tracking-wider text-[#924c0a] dark:text-[#e2a265] font-bold uppercase mb-1">Passcode Guidance / 비밀번호 안내</h4>
             <ul className="list-disc list-inside font-serif text-[11px] text-[#18241b]/60 dark:text-[#f5ece5]/60 space-y-1">
-              <li>Use the key <code className="bg-stone-200 dark:bg-[#1c1814] px-1 rounded text-[#18241b] dark:text-[#f5ece5] font-mono font-bold">1234</code> or <code className="bg-stone-200 dark:bg-[#1c1814] px-1 rounded text-[#18241b] dark:text-[#f5ece5] font-mono font-bold">onceagain</code> to test mock integration edits.</li>
-              <li>Once unlocked, you will gain access to complete publishing boards.</li>
+              <li>임시로 제공되는 암호인 <code className="bg-stone-200 dark:bg-[#1c1814] px-1 rounded text-[#18241b] dark:text-[#f5ece5] font-mono font-bold">1234</code> 또는 <code className="bg-stone-200 dark:bg-[#1c1814] px-1 rounded text-[#18241b] dark:text-[#f5ece5] font-mono font-bold">onceagain</code>을 입력하여 테스트하실 수 있습니다.</li>
+              <li>암호가 해제되면 관리자용 등록 폼들이 활성화됩니다.</li>
             </ul>
           </div>
 
@@ -204,20 +204,20 @@ export const AdminView: React.FC<AdminViewProps> = ({
       <div className="border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="text-center sm:text-left">
           <span className="font-sans text-[10px] tracking-[0.3em] font-semibold text-[#924c0a] dark:text-[#e2a265]">
-            SECURE CURATION DASHBOARD / 관리자 콘솔
+            SECURE CURATION DASHBOARD / 가족 아카이브 관리자 콘솔
           </span>
           <h1 className="font-serif text-3xl md:text-4xl text-[#18241b] dark:text-[#f5ece5] mt-1 font-normal">
-            Heirloom Console
+            Heirloom Console / 아카이브 관리 콘솔
           </h1>
           <p className="font-serif text-xs md:text-sm text-[#18241b]/60 dark:text-[#f5ece5]/60 italic mt-1">
-            Author and publish beautiful catalog cards live into the family memory archive state database.
+            가족의 소중한 기억이 담긴 아카이브 카드를 손쉽게 발행하여 데이터베이스에 바로 반영할 수 있습니다.
           </p>
         </div>
         <button
           onClick={onLogout}
           className="px-4 py-2 bg-red-800 dark:bg-red-750 text-white hover:bg-red-900 dark:hover:bg-red-850 rounded font-sans text-xs tracking-wider font-semibold shadow-sm cursor-pointer transition-colors"
         >
-          LOGOUT CONSOLE
+          콘솔 로그아웃 (LOGOUT CONSOLE)
         </button>
       </div>
 
@@ -225,10 +225,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
       <section className="bg-[#f5ece5] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded-xl p-5 space-y-3">
         <h3 className="font-serif text-sm font-semibold text-[#18241b] dark:text-[#f5ece5] flex items-center gap-1.5">
           <Key size={14} className="text-[#924c0a] dark:text-[#e2a265]" />
-          <span>Aesthetic Image Hotlink Library (Simply click any button to copy link to inputs)</span>
+          <span>Aesthetic Image Hotlink Library / 이미지 링크 라이브러리 (버튼을 누르면 하단 입력창에 자동 입력됩니다)</span>
         </h3>
         <p className="font-serif text-xs text-[#18241b]/75 dark:text-[#f5ece5]/75">
-          We support hot-linking ANY online image file in HTML form directly. Below are specific custom Unsplash images that match our elegant vintage look:
+          인터넷상의 모든 이미지 주소(URL)를 입력하여 바로 연동할 수 있습니다. 아래 버튼들은 당사 아카이브의 아늑하고 따뜻한 아날로그 분위기에 맞춰 엄선한 Unsplash 예시 이미지들입니다:
         </p>
         <div className="flex flex-wrap gap-2.5">
           {presets.map((p) => (
@@ -256,15 +256,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="space-y-4">
             <h3 className="font-serif text-lg text-[#18241b] dark:text-[#f5ece5] border-b border-[#18241b]/5 dark:border-[#f5ece5]/5 pb-2 flex items-center gap-2">
               <FileText className="text-[#924c0a] dark:text-[#e2a265]" size={18} />
-              <span>Publish Study Chronicle</span>
+              <span>Publish Study Chronicle / 아빠의 서재 일지 발행</span>
             </h3>
 
             <form onSubmit={handlePublishBlog} className="space-y-3">
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Chronicle Title</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Chronicle Title / 일지 제목</label>
                 <input
                   type="text"
-                  placeholder="e.g. The Quiet Woods of Korea"
+                  placeholder="예: 한국의 고요한 숲속길 (e.g. The Quiet Woods of Korea)"
                   value={blogTitle}
                   onChange={(e) => setBlogTitle(e.target.value)}
                   required
@@ -274,19 +274,19 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Category</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Category / 카테고리</label>
                   <select
                     value={blogCategory}
                     onChange={(e) => setBlogCategory(e.target.value)}
                     className="w-full text-xs bg-stone-50 dark:bg-[#1c1814] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded p-2 focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265] text-black dark:text-white"
                   >
-                    <option value="REFLECTIONS">REFLECTIONS</option>
-                    <option value="ARCHITECTURE">ARCHITECTURE</option>
-                    <option value="LEGACY">LEGACY</option>
+                    <option value="REFLECTIONS">REFLECTIONS (성찰/생각)</option>
+                    <option value="ARCHITECTURE">ARCHITECTURE (건축/기록)</option>
+                    <option value="LEGACY">LEGACY (가족 유산)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Image Hotlink URL</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Image Hotlink URL / 이미지 링크</label>
                   <input
                     type="url"
                     placeholder="https://images.unsplash.com/..."
@@ -298,10 +298,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Short Excerpt Summary</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Short Excerpt Summary / 한 줄 요약</label>
                 <input
                   type="text"
-                  placeholder="Ex. Brief overview of direct light shadows..."
+                  placeholder="예: 빛과 그림자가 어우러진 산책 (Ex. Brief overview of direct light...)"
                   value={blogExcerpt}
                   onChange={(e) => setBlogExcerpt(e.target.value)}
                   className="w-full text-xs font-serif bg-stone-50 dark:bg-[#1c1814] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded p-2 focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265] text-black dark:text-white"
@@ -309,9 +309,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Long Article Content</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Long Article Content / 상세 일지 내용</label>
                 <textarea
-                  placeholder="Type full observations or family wisdom journal..."
+                  placeholder="가족들과 함께 나누고 싶은 생각이나 깨달음을 자유롭게 적어주세요 (Type full observations...)"
                   value={blogContent}
                   onChange={(e) => setBlogContent(e.target.value)}
                   rows={5}
@@ -325,7 +325,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 className="w-full bg-[#924c0a] hover:bg-[#a35e19] text-[#fff8f4] dark:bg-[#e2a265] dark:text-[#1c1814] dark:hover:bg-[#f5ece5] py-2.5 rounded font-sans text-xs tracking-widest font-semibold flex items-center justify-center space-x-1.5 cursor-pointer shadow-md transition"
               >
                 <Plus size={14} />
-                <span>PUBLISH TO PAPA'S STUDY</span>
+                <span>아빠의 서재에 일지 발행하기 (PUBLISH)</span>
               </button>
             </form>
           </div>
@@ -336,15 +336,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="space-y-4">
             <h3 className="font-serif text-lg text-[#18241b] dark:text-[#f5ece5] border-b border-[#18241b]/5 dark:border-[#f5ece5]/5 pb-2 flex items-center gap-2">
               <Palette className="text-[#924c0a] dark:text-[#e2a265]" size={18} />
-              <span>Offer Artwork Masterpiece</span>
+              <span>Offer Artwork Masterpiece / 딸의 그림 등록하기</span>
             </h3>
 
             <form onSubmit={handlePublishArt} className="space-y-3">
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Painting Title</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Painting Title / 작품 제목</label>
                 <input
                   type="text"
-                  placeholder="e.g. Under the Cebu Canopy"
+                  placeholder="예: 세부의 그늘 아래서 (e.g. Under the Cebu Canopy)"
                   value={artTitle}
                   onChange={(e) => setArtTitle(e.target.value)}
                   required
@@ -353,10 +353,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Aesthetic Medium</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Aesthetic Medium / 미술 재료 및 기법</label>
                 <input
                   type="text"
-                  placeholder="e.g. Watercolor on Arches Paper"
+                  placeholder="예: 아르쉬지 위에 수채화 (e.g. Watercolor on Arches Paper)"
                   value={artMedium}
                   onChange={(e) => setArtMedium(e.target.value)}
                   required
@@ -366,17 +366,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Recorded Date</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Recorded Date / 제작 일자</label>
                   <input
                     type="text"
-                    placeholder="e.g. July 2025"
+                    placeholder="예: 2025년 7월 (e.g. July 2025)"
                     value={artDate}
                     onChange={(e) => setArtDate(e.target.value)}
                     className="w-full text-xs bg-stone-50 dark:bg-[#1c1814] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded p-2 focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265] text-black dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Art Image Hotlink</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Art Image Hotlink / 작품 이미지 링크</label>
                   <input
                     type="url"
                     placeholder="https://images.unsplash.com/..."
@@ -388,9 +388,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div className="p-3.5 bg-[#f5ece5]/60 dark:bg-[#1c1814]/60 rounded border border-[#18241b]/5 dark:border-[#f5ece5]/5 text-center">
-                <span className="font-sans text-[9px] tracking-widest text-[#924c0a] dark:text-[#e2a265] font-bold block">NOTE FOR ARTWORKS</span>
+                <span className="font-sans text-[9px] tracking-widest text-[#924c0a] dark:text-[#e2a265] font-bold block">NOTE FOR ARTWORKS / 미술 작품 등록 참고사항</span>
                 <p className="font-serif text-[11px] text-[#18241b]/70 dark:text-[#f5ece5]/70 mt-1 italic leading-relaxed">
-                  "Paintings are automatically registered in the watercolor gallery system under 'DAUGHTER'S GRAPHICS'."
+                  "등록된 수채화 등 모든 미술 작품은 '딸의 그림(ART GALLERY)' 공간에 즉시 연동되어 전시됩니다."
                 </p>
               </div>
 
@@ -399,7 +399,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 className="w-full bg-[#924c0a] hover:bg-[#a35e19] text-[#fff8f4] dark:bg-[#e2a265] dark:text-[#1c1814] dark:hover:bg-[#f5ece5] py-2.5 rounded font-sans text-xs tracking-widest font-semibold flex items-center justify-center space-x-1.5 cursor-pointer shadow-md transition"
               >
                 <Plus size={14} />
-                <span>OFFER TO PUBLIC GALLERY</span>
+                <span>공개 갤러리에 미술 작품 등록하기 (OFFER)</span>
               </button>
             </form>
           </div>
@@ -410,15 +410,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="space-y-4">
             <h3 className="font-serif text-lg text-[#18241b] dark:text-[#f5ece5] border-b border-[#18241b]/5 dark:border-[#f5ece5]/5 pb-2 flex items-center gap-2">
               <Camera className="text-[#924c0a] dark:text-[#e2a265]" size={18} />
-              <span>Index Travel Record</span>
+              <span>Index Travel Record / 엄마의 여행 기록 등록</span>
             </h3>
 
             <form onSubmit={handlePublishTravel} className="space-y-3">
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Travel Log Title</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Travel Log Title / 여행기 제목</label>
                 <input
                   type="text"
-                  placeholder="e.g. Walking Cebu's Basalt Shores"
+                  placeholder="예: 세부의 현무암 해변을 걸으며 (e.g. Walking Cebu's...)"
                   value={travelTitle}
                   onChange={(e) => setTravelTitle(e.target.value)}
                   required
@@ -428,23 +428,24 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Destination Tag</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Destination Tag / 여행지 태그</label>
                   <select
                     value={travelDestination}
                     onChange={(e) => setTravelDestination(e.target.value)}
                     className="w-full text-xs bg-stone-50 dark:bg-[#1c1814] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded p-2 focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265] text-black dark:text-white"
                   >
-                    <option value="MANILA, PH">MANILA, PH</option>
-                    <option value="SEOUL, KR">SEOUL, KR</option>
-                    <option value="CEBU, PH">CEBU, PH</option>
-                    <option value="JEJU, KR">JEJU, KR</option>
+                    {Object.entries(DESTINATION_MAP).map(([key, val]) => (
+                      <option key={key} value={key}>
+                        {val}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Recorded Date</label>
+                  <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Recorded Date / 여행 일자</label>
                   <input
                     type="text"
-                    placeholder="e.g. October 2024"
+                    placeholder="예: 2026년 5월 (e.g. May 2026)"
                     value={travelDate}
                     onChange={(e) => setTravelDate(e.target.value)}
                     className="w-full text-xs bg-stone-50 dark:bg-[#1c1814] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded p-2 focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265] text-black dark:text-white"
@@ -453,7 +454,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Photo Hotlink URL</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Photo Hotlink URL / 사진 링크</label>
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
@@ -464,9 +465,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Travel Story Description</label>
+                <label className="block text-[10px] font-sans text-stone-500 dark:text-stone-400 font-semibold uppercase tracking-wider mb-1">Travel Story Description / 여행 이야기 설명</label>
                 <textarea
-                  placeholder="Type an elegant description of scents, winds, or local people..."
+                  placeholder="그 여행지의 신선한 바람, 이국적인 향기, 현지 풍경에 대한 감상을 따뜻하게 적어주세요 (Type an elegant description...)"
                   value={travelDesc}
                   onChange={(e) => setTravelDesc(e.target.value)}
                   rows={4}
@@ -480,7 +481,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 className="w-full bg-[#924c0a] hover:bg-[#a35e19] text-[#fff8f4] dark:bg-[#e2a265] dark:text-[#1c1814] dark:hover:bg-[#f5ece5] py-2.5 rounded font-sans text-xs tracking-widest font-semibold flex items-center justify-center space-x-1.5 cursor-pointer shadow-md transition"
               >
                 <Plus size={14} />
-                <span>INDEX VOYAGE RECORD</span>
+                <span>엄마의 여행기에 기록 추가하기 (INDEX VOYAGE)</span>
               </button>
             </form>
           </div>

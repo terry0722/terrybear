@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from "react";
 import { MapPin, Calendar, ChevronRight, X, Compass } from "lucide-react";
-import { TravelLog } from "../types";
+import { TravelLog, DESTINATION_MAP } from "../types";
 
 interface TravelViewProps {
   travels: TravelLog[];
@@ -21,8 +21,17 @@ export const TravelView: React.FC<TravelViewProps> = ({
   const [selectedDestination, setSelectedDestination] = useState<string>("ALL");
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
-  // Destinations list
-  const destinations = ["ALL", "MANILA, PH", "SEOUL, KR", "CEBU, PH", "JEJU, KR"];
+  // Dynamic Destinations list based on actual travel records
+  const destinations = useMemo(() => {
+    const list = new Set<string>();
+    list.add("ALL");
+    travels.forEach((t) => {
+      if (t.destination) {
+        list.add(t.destination.toUpperCase());
+      }
+    });
+    return Array.from(list);
+  }, [travels]);
 
   // Filter logs
   const filteredTravels = useMemo(() => {
@@ -32,7 +41,7 @@ export const TravelView: React.FC<TravelViewProps> = ({
 
   // Travel generic metrics
   const uniqueLocations = useMemo(() => {
-    return new Set(travels.map((t) => t.destination)).size;
+    return new Set(travels.map((t) => t.destination.toUpperCase())).size;
   }, [travels]);
 
   // Featured Travel log (usually the most romantic one, Cebu or Jeju)
@@ -88,11 +97,11 @@ export const TravelView: React.FC<TravelViewProps> = ({
           <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 text-white flex flex-col justify-end space-y-4 max-w-3xl">
             <div className="flex items-center space-x-2">
               <span className="bg-[#924c0a] dark:bg-[#e2a265] text-white dark:text-[#1c1814] px-2.5 py-0.5 text-[9px] font-sans font-bold tracking-widest rounded uppercase">
-                FEATURED EXPEDITION
+                FEATURED EXPEDITION / 추천 여행기
               </span>
               <span className="text-xs font-sans text-stone-200 flex items-center gap-1">
                 <MapPin size={12} className="text-[#e2a265]" />
-                {featuredTravel.destination}
+                {DESTINATION_MAP[featuredTravel.destination.toUpperCase()] || featuredTravel.destination}
               </span>
             </div>
 
@@ -126,7 +135,7 @@ export const TravelView: React.FC<TravelViewProps> = ({
         <article className="bg-[#fff] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 p-6 sm:p-10 rounded-xl max-w-4xl mx-auto space-y-4 animate-fadeIn shadow-sm transition">
           <div className="flex items-center justify-between">
             <span className="font-sans text-[10px] tracking-widest text-[#924c0a] dark:text-[#e2a265] font-bold">
-              JOURNAL {featuredTravel.destination}
+              JOURNAL / {DESTINATION_MAP[featuredTravel.destination.toUpperCase()] || featuredTravel.destination}
             </span>
             <button onClick={() => setExpandedLogId(null)} className="text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-white cursor-pointer">
               <X size={18} />
@@ -149,19 +158,24 @@ export const TravelView: React.FC<TravelViewProps> = ({
         
         {/* Tabs selector */}
         <div className="flex flex-wrap gap-2 justify-center border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 pb-5">
-          {destinations.map((dest) => (
-            <button
-              key={dest}
-              onClick={() => setSelectedDestination(dest)}
-              className={`px-4 py-2 text-xs font-sans tracking-widest font-semibold rounded cursor-pointer transition-all ${
-                selectedDestination === dest
-                  ? "bg-[#924c0a] dark:bg-[#e2a265] text-white dark:text-[#1c1814]"
-                  : "text-[#18241b]/60 dark:text-[#f5ece5]/60 hover:text-[#18241b] dark:hover:text-[#f5ece5] hover:bg-[#18241b]/5 dark:hover:bg-[#f5ece5]/5"
-              }`}
-            >
-              {dest}
-            </button>
-          ))}
+          {destinations.map((dest) => {
+            const displayLabel = dest === "ALL" 
+              ? "ALL / 전체보기" 
+              : (DESTINATION_MAP[dest.toUpperCase()] || dest);
+            return (
+              <button
+                key={dest}
+                onClick={() => setSelectedDestination(dest)}
+                className={`px-4 py-2 text-xs font-sans tracking-widest font-semibold rounded cursor-pointer transition-all ${
+                  selectedDestination === dest
+                    ? "bg-[#924c0a] dark:bg-[#e2a265] text-white dark:text-[#1c1814]"
+                    : "text-[#18241b]/60 dark:text-[#f5ece5]/60 hover:text-[#18241b] dark:hover:text-[#f5ece5] hover:bg-[#18241b]/5 dark:hover:bg-[#f5ece5]/5"
+                }`}
+              >
+                {displayLabel}
+              </button>
+            );
+          })}
         </div>
 
         {/* Dynamic Bento Cards */}
@@ -183,7 +197,7 @@ export const TravelView: React.FC<TravelViewProps> = ({
                   />
                   <div className="absolute top-4 left-4 bg-black/60 dark:bg-[#1c1814]/75 backdrop-blur-md px-3 py-1 rounded text-white text-[10px] font-sans tracking-wider flex items-center gap-1.5">
                     <MapPin size={10} className="text-[#e2a265]" />
-                    {log.destination}
+                    {DESTINATION_MAP[log.destination.toUpperCase()] || log.destination}
                   </div>
                 </div>
 
@@ -223,13 +237,14 @@ export const TravelView: React.FC<TravelViewProps> = ({
                     {isAdmin && onDeleteTravel && (
                       <button
                         onClick={() => {
-                          if (confirm(`Do you wish to delete travel log to ${log.destination}?`)) {
+                          const destinationLabel = DESTINATION_MAP[log.destination.toUpperCase()] || log.destination;
+                          if (confirm(`정말로 ${destinationLabel} 여행 기록을 삭제하시겠습니까? (Do you wish to delete?)`)) {
                             onDeleteTravel(log.id);
                           }
                         }}
                         className="text-[10px] font-sans tracking-wider border border-red-800/20 dark:border-red-500/20 text-red-800 dark:text-red-400 hover:bg-red-800/10 dark:hover:bg-red-800/20 px-2.5 py-0.5 rounded cursor-pointer"
                       >
-                        RETIRE LOG
+                        기록 삭제 (RETIRE LOG)
                       </button>
                     )}
                   </div>
