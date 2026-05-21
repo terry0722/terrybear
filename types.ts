@@ -33,3 +33,18 @@ export interface GuestbookMessage {
   message: string;
   date: string;
 }
+
+export type Category = 'Daily Life' | 'Heritage' | 'Celebrations' | 'Holidays' | 'Travel';
+
+export interface Moment {
+  id: string;
+  category: Category;
+  title: string;
+  description: string;
+  date: string;
+  imageUrl: string;
+  location?: string;
+  details?: string;
+  comments?: any[];
+}
+
