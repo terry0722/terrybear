@@ -25,3 +25,11 @@ export interface TravelLog {
   description: string;
   image: string;
 }
+
+export interface GuestbookMessage {
+  id: string;
+  name: string;
+  relation: string;
+  message: string;
+  date: string;
+}
