@@ -57,7 +57,13 @@ export default function ArtGalleryPage() {
     }
   }, [initialArtworks]);
 
+  const [isLocalAdmin, setIsLocalAdmin] = useState(false);
+
   useEffect(() => {
+    // Sync admin state
+    const logged = localStorage.getItem('family_admin_logged');
+    setIsLocalAdmin(logged === 'true');
+    
     // 유저 상태
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
     fetchArtworks();
@@ -118,7 +124,7 @@ export default function ArtGalleryPage() {
       {/* GalleryView 컴포넌트 렌더링 */}
       <GalleryView 
         artworks={artworks} 
-        isAdmin={!!user} 
+        isAdmin={!!user || isLocalAdmin} 
         onDeleteArtwork={handleDeleteArtwork} 
       />
 
