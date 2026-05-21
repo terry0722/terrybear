@@ -76,6 +76,7 @@ export default function Header() {
           <Link href="/artgallery" className={getMenuClass('/artgallery')}>Art Gallery</Link>
           <Link href="/travel" className={getMenuClass('/travel')}>Travel</Link>
           <Link href="/guestbook" className={getMenuClass('/guestbook')}>Guestbook</Link>
+          <Link href="/admin" className={getMenuClass('/admin')}>Admin</Link>
           
           {user ? (
             <div className="flex items-center gap-2 md:gap-4 ml-1 md:ml-2">

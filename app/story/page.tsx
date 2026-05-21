@@ -1,8 +1,25 @@
 'use client';
 
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Article } from '@/types';
 
 export default function StoryPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 등록된 아빠의 서재 일지 불러오기
+    const stored = localStorage.getItem('custom_articles');
+    if (stored) {
+      try {
+        setArticles(JSON.parse(stored));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] transition-colors duration-300 pb-32">
       
@@ -79,6 +96,91 @@ export default function StoryPage() {
            </h2>
          </div>
       </section>
+
+      {/* 5. 아빠의 서재 일지 (Chronicles) */}
+      <section className="max-w-6xl mx-auto px-6 mt-28 border-t border-[#18241b]/10 dark:border-[#f5ece5]/10 pt-20">
+        <div className="text-center mb-16">
+          <span className="text-[10px] tracking-[0.3em] uppercase text-[#924c0a] dark:text-[#e2a265] font-semibold block mb-2">Papa's Archive</span>
+          <h2 className="text-3xl font-serif font-normal tracking-tight text-[#18241b] dark:text-[#f5ece5]">아빠의 서재 일지 (Study Chronicles)</h2>
+          <p className="font-serif text-xs text-[#18241b]/50 dark:text-[#f5ece5]/50 italic mt-2">
+            가족의 매일을 기록하고 성찰한 아빠의 따뜻한 생각 한 조각.
+          </p>
+        </div>
+
+        {articles.length === 0 ? (
+          <p className="text-center font-serif text-xs text-[#18241b]/40 dark:text-[#f5ece5]/40 italic tracking-widest">등록된 서재 일지가 아직 없습니다.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((article) => (
+              <div 
+                key={article.id} 
+                className="group bg-[#f5ece5]/30 dark:bg-[#2a2420]/30 border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full justify-between"
+              >
+                <div className="aspect-[16/10] w-full overflow-hidden bg-[#f5ece5] dark:bg-[#1c1814] relative">
+                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-103 transition duration-550" />
+                  <span className="absolute top-3 left-3 bg-[#924c0a] dark:bg-[#e2a265] text-[#fff8f4] dark:text-[#1c1814] text-[9px] tracking-widest uppercase font-semibold px-2 py-0.5 rounded shadow-sm">
+                    {article.category}
+                  </span>
+                </div>
+                
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <span className="text-[10px] text-[#18241b]/40 dark:text-[#f5ece5]/40 font-mono block">{article.date}</span>
+                    <h3 className="text-base font-serif font-normal text-[#18241b] dark:text-[#f5ece5] leading-snug group-hover:text-[#924c0a] dark:group-hover:text-[#e2a265] transition-colors">{article.title}</h3>
+                    <p className="text-xs text-[#18241b]/60 dark:text-[#f5ece5]/60 leading-relaxed font-serif line-clamp-3">{article.excerpt}</p>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-[#18241b]/5 dark:border-[#f5ece5]/5 mt-6 flex justify-between items-center">
+                    <span className="text-[9px] tracking-widest text-[#924c0a] dark:text-[#e2a265] font-semibold uppercase">{article.author}</span>
+                    
+                    <button 
+                      onClick={() => setViewingArticle(article)}
+                      className="text-[10px] text-[#18241b]/50 dark:text-[#f5ece5]/50 hover:text-[#924c0a] dark:hover:text-[#e2a265] hover:underline font-semibold cursor-pointer"
+                    >
+                      READ MORE
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Modal Dialog to read full chronicle */}
+      {viewingArticle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-fadeIn overflow-y-auto">
+          <div className="absolute inset-0 cursor-pointer" onClick={() => setViewingArticle(null)} />
+          
+          <div className="relative bg-[#fff8f4] dark:bg-[#2a2420] rounded-xl max-w-2xl w-full mx-auto overflow-hidden shadow-2xl z-10 border border-[#18241b]/10 dark:border-[#f5ece5]/10">
+            <div className="h-[250px] w-full relative">
+              <img src={viewingArticle.image} alt={viewingArticle.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+              <button 
+                onClick={() => setViewingArticle(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 cursor-pointer text-lg font-normal"
+              >
+                &times;
+              </button>
+              <div className="absolute bottom-6 left-6 text-white space-y-1">
+                <span className="bg-[#e2a265] text-[#1c1814] text-[9px] tracking-widest uppercase font-semibold px-2 py-0.5 rounded shadow-sm">
+                  {viewingArticle.category}
+                </span>
+                <h3 className="text-xl md:text-2xl font-serif font-normal">{viewingArticle.title}</h3>
+              </div>
+            </div>
+            <div className="p-6 md:p-8 space-y-6">
+              <div className="flex justify-between items-center text-xs text-[#18241b]/40 dark:text-[#f5ece5]/40 border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 pb-4">
+                <span>DATE: {viewingArticle.date}</span>
+                <span className="font-semibold text-[#924c0a] dark:text-[#e2a265]">{viewingArticle.author}</span>
+              </div>
+              <p className="text-sm md:text-base leading-relaxed text-[#18241b]/80 dark:text-[#f5ece5]/80 font-serif font-light whitespace-pre-wrap">
+                {viewingArticle.content}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </main>
   );

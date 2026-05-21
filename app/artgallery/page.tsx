@@ -44,9 +44,16 @@ export default function ArtGalleryPage() {
             image: publicUrl,
           };
         })
-        .sort((a, b) => (a.image > b.image ? -1 : 1));
-
-      setArtworks([...uploadedArts, ...initialArtworks]);
+      const stored = localStorage.getItem('custom_artworks');
+      let customArts: Artwork[] = [];
+      if (stored) {
+        try {
+          customArts = JSON.parse(stored);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setArtworks([...customArts, ...uploadedArts, ...initialArtworks]);
     }
   }, [initialArtworks]);
 
@@ -77,6 +84,19 @@ export default function ArtGalleryPage() {
       } else {
         alert("성공적으로 작품이 삭제되었습니다.");
         fetchArtworks();
+      }
+    } else if (id.startsWith("custom-art-")) {
+      const stored = localStorage.getItem('custom_artworks');
+      if (stored) {
+        try {
+          const current: Artwork[] = JSON.parse(stored);
+          const updated = current.filter(art => art.id !== id);
+          localStorage.setItem('custom_artworks', JSON.stringify(updated));
+          setArtworks(prev => prev.filter(art => art.id !== id));
+          alert("성공적으로 작품이 삭제되었습니다.");
+        } catch (e) {
+          console.error(e);
+        }
       }
     } else {
       // 로컬 초기 데이터는 상태에서만 임시 제거
