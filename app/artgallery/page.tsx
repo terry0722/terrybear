@@ -1,110 +1,107 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import PhotoUpload from '@/components/PhotoUpload';
+import { GalleryView } from '@/components/GalleryView';
+import { Artwork } from '@/types';
 
 export default function ArtGalleryPage() {
   const [user, setUser] = useState<any>(null);
   
-  const initialArtworks = [
-    { id: 1, title: "Daughter's Art 01", date: "2026. 03", src: "/images/art/daughter_art_01.jpeg" },
-    { id: 2, title: "Daughter's Art 02", date: "2026. 03", src: "/images/art/daughter_art_02.jpeg" },
-    { id: 3, title: "Daughter's Art 03", date: "2026. 03", src: "/images/art/daughter_art_03.jpeg" },
+  const initialArtworks: Artwork[] = [
+    { id: "artw-1", title: "Summer by the Reef", date: "2026. 03", medium: "Watercolor on Paper", image: "/images/art/daughter_art_01.jpeg" },
+    { id: "artw-2", title: "Forest Ferns & Canopy", date: "2026. 03", medium: "Watercolor on Paper", image: "/images/art/daughter_art_02.jpeg" },
+    { id: "artw-3", title: "Charcoal Lagoon Shade", date: "2026. 03", medium: "Charcoal on Paper", image: "/images/art/daughter_art_03.jpeg" },
   ];
 
-  const [artworks, setArtworks] = useState<any[]>(initialArtworks);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [artworks, setArtworks] = useState<Artwork[]>(initialArtworks);
+
+  // Storage에서 'art_gallery' 정보 가져오기
+  const fetchArtworks = useCallback(async () => {
+    const { data, error } = await supabase.storage.from('art_gallery').list();
+    
+    if (data && !error) {
+      const uploadedArts = data
+        .filter(file => file.name && file.name !== '.emptyFolderPlaceholder')
+        .map((file, idx) => {
+          const publicUrl = supabase.storage.from('art_gallery').getPublicUrl(file.name).data.publicUrl;
+          
+          // 파일명에서 난수 제거하고 본래 이름 유추해 타이틀 생성
+          let cleanTitle = "Family Art";
+          if (file.name) {
+            const baseName = file.name.split('_')[0];
+            if (baseName && baseName.length > 2) {
+              cleanTitle = baseName.substring(0, 20);
+            }
+          }
+
+          return {
+            id: "storage-" + file.name,
+            title: cleanTitle,
+            date: file.created_at ? new Date(file.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit' }) : "최근 작품",
+            medium: "Watercolor on Paper", // 기본 매체 종류 지정
+            image: publicUrl,
+          };
+        })
+        .sort((a, b) => (a.image > b.image ? -1 : 1));
+
+      setArtworks([...uploadedArts, ...initialArtworks]);
+    }
+  }, [initialArtworks]);
 
   useEffect(() => {
     // 유저 상태
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-
-    // Storage에서 'art_gallery' 정보 가져오기
-    const fetchArtworks = async () => {
-      const { data, error } = await supabase.storage.from('art_gallery').list();
-      
-      if (data && !error) {
-        const uploadedArts = data
-          .filter(file => file.name && file.name !== '.emptyFolderPlaceholder')
-          .map((file, idx) => {
-            const publicUrl = supabase.storage.from('art_gallery').getPublicUrl(file.name).data.publicUrl;
-            return {
-              id: 100 + idx, // 임시 ID
-              title: "Family Art",
-              date: "최근 작품",
-              src: publicUrl,
-            };
-          })
-          .sort((a, b) => (a.src > b.src ? -1 : 1));
-
-        setArtworks([...uploadedArts, ...initialArtworks]);
-      }
-    };
-
     fetchArtworks();
-  }, []);
+  }, [fetchArtworks]);
 
   const handleUploadSuccess = (newUrl: string) => {
-    const newArt = {
-      id: Date.now(),
-      title: "새로운 별작",
-      date: "오늘",
-      src: newUrl,
+    const fileName = newUrl.split('/').pop() || 'new_art';
+    const newArt: Artwork = {
+      id: "storage-" + fileName,
+      title: "새로운 작품",
+      date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit' }),
+      medium: "Watercolor on Paper",
+      image: newUrl,
     };
     setArtworks([newArt, ...artworks]);
   };
 
+  const handleDeleteArtwork = async (id: string) => {
+    if (id.startsWith("storage-")) {
+      const fileName = id.replace("storage-", "");
+      const { error } = await supabase.storage.from('art_gallery').remove([fileName]);
+      if (error) {
+        alert("삭제에 실패했습니다: " + error.message);
+      } else {
+        alert("성공적으로 작품이 삭제되었습니다.");
+        fetchArtworks();
+      }
+    } else {
+      // 로컬 초기 데이터는 상태에서만 임시 제거
+      setArtworks(prev => prev.filter(art => art.id !== id));
+      alert("기본 전시 작품이 목록에서 임시 제외되었습니다.");
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] transition-colors duration-300 pb-20 px-6">
-      <div className="max-w-5xl mx-auto pt-16">
-        <h1 className="text-3xl font-serif font-normal tracking-[0.2em] mb-12 text-center uppercase text-[#18241b] dark:text-[#f5ece5]">ART GALLERY</h1>
-        
-        {user && <PhotoUpload bucketName="art_gallery" onUploadSuccess={handleUploadSuccess} />}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-12">
-          {artworks.map((art, index) => (
-            <div 
-              key={art.id} 
-              className="group cursor-pointer animate-fade-in-up" 
-              style={{ animationDelay: `${index * 0.1}s` }}
-              onClick={() => setSelectedImage(art.src)}
-            >
-              <div className="aspect-[4/5] overflow-hidden bg-[#f5ece5] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 shadow-sm transition-all duration-300 group-hover:shadow-lg rounded-sm">
-                <img 
-                  src={art.src} 
-                  alt={art.title} 
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
-                  onError={(e) => { (e.target as any).src = 'https://via.placeholder.com/600x800?text=Art' }}
-                />
-              </div>
-              <p className="text-[11px] tracking-widest text-[#18241b]/80 dark:text-[#f5ece5]/80 mt-4 uppercase font-medium font-serif">{art.title}</p>
-              <p className="text-[9px] tracking-widest text-[#18241b]/40 dark:text-[#f5ece5]/40 mt-1 uppercase">{art.date}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 팝업 모달 */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1c1814]/95 backdrop-blur-sm p-4 cursor-zoom-out transition-opacity duration-300"
-          onClick={() => setSelectedImage(null)}
-        >
-          <button 
-            className="absolute top-8 right-8 text-white text-3xl font-light hover:text-[#e2a265] hover:rotate-90 transition-all duration-300"
-            onClick={() => setSelectedImage(null)}
-          >
-            &times;
-          </button>
-          <div className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-md shadow-2xl border border-[#f5ece5]/10" onClick={e => e.stopPropagation()}>
-            <img 
-              src={selectedImage} 
-              alt="Enlarged Art" 
-              className="w-full h-full object-contain"
-            />
-          </div>
+    <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] transition-colors duration-300 pb-20 px-6 pt-16">
+      
+      {/* 관리자 업로드 UI */}
+      {user && (
+        <div className="max-w-7xl mx-auto mb-10">
+          <PhotoUpload bucketName="art_gallery" onUploadSuccess={handleUploadSuccess} />
         </div>
       )}
+
+      {/* GalleryView 컴포넌트 렌더링 */}
+      <GalleryView 
+        artworks={artworks} 
+        isAdmin={!!user} 
+        onDeleteArtwork={handleDeleteArtwork} 
+      />
+
     </main>
   );
 }
