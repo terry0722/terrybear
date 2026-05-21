@@ -55,9 +55,9 @@ export default function ArtGalleryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] dark:bg-[#111111] transition-colors duration-300 pb-20 px-6">
+    <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] transition-colors duration-300 pb-20 px-6">
       <div className="max-w-5xl mx-auto pt-16">
-        <h1 className="text-3xl font-light tracking-[0.2em] mb-12 text-center uppercase text-black dark:text-white">ART GALLERY</h1>
+        <h1 className="text-3xl font-serif font-normal tracking-[0.2em] mb-12 text-center uppercase text-[#18241b] dark:text-[#f5ece5]">ART GALLERY</h1>
         
         {user && <PhotoUpload bucketName="art_gallery" onUploadSuccess={handleUploadSuccess} />}
 
@@ -69,7 +69,7 @@ export default function ArtGalleryPage() {
               style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => setSelectedImage(art.src)}
             >
-              <div className="aspect-[4/5] overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-300 group-hover:shadow-lg rounded-sm">
+              <div className="aspect-[4/5] overflow-hidden bg-[#f5ece5] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 shadow-sm transition-all duration-300 group-hover:shadow-lg rounded-sm">
                 <img 
                   src={art.src} 
                   alt={art.title} 
@@ -77,8 +77,8 @@ export default function ArtGalleryPage() {
                   onError={(e) => { (e.target as any).src = 'https://via.placeholder.com/600x800?text=Art' }}
                 />
               </div>
-              <p className="text-[11px] tracking-widest text-gray-500 dark:text-gray-400 mt-4 uppercase font-medium">{art.title}</p>
-              <p className="text-[9px] tracking-widest text-gray-300 dark:text-gray-600 mt-1 uppercase">{art.date}</p>
+              <p className="text-[11px] tracking-widest text-[#18241b]/80 dark:text-[#f5ece5]/80 mt-4 uppercase font-medium font-serif">{art.title}</p>
+              <p className="text-[9px] tracking-widest text-[#18241b]/40 dark:text-[#f5ece5]/40 mt-1 uppercase">{art.date}</p>
             </div>
           ))}
         </div>
@@ -87,16 +87,16 @@ export default function ArtGalleryPage() {
       {/* 팝업 모달 */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 cursor-zoom-out transition-opacity duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1c1814]/95 backdrop-blur-sm p-4 cursor-zoom-out transition-opacity duration-300"
           onClick={() => setSelectedImage(null)}
         >
           <button 
-            className="absolute top-8 right-8 text-white text-3xl font-light hover:text-yellow-400 hover:rotate-90 transition-all duration-300"
+            className="absolute top-8 right-8 text-white text-3xl font-light hover:text-[#e2a265] hover:rotate-90 transition-all duration-300"
             onClick={() => setSelectedImage(null)}
           >
             &times;
           </button>
-          <div className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-md shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-md shadow-2xl border border-[#f5ece5]/10" onClick={e => e.stopPropagation()}>
             <img 
               src={selectedImage} 
               alt="Enlarged Art" 

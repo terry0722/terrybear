@@ -66,11 +66,11 @@ export default function GalleryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] dark:bg-[#111111] transition-colors duration-300 py-12 px-6 relative">
+    <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] transition-colors duration-300 py-12 px-6 relative">
       <div className="max-w-6xl mx-auto">
         <div className="mb-12 text-center">
-          <h1 className="text-3xl font-light tracking-tight text-black dark:text-white">가족 사진첩</h1>
-          <div className="w-8 h-[1px] bg-gray-300 dark:bg-gray-700 mx-auto mt-6"></div>
+          <h1 className="text-3xl font-serif font-normal tracking-tight text-[#18241b] dark:text-[#f5ece5]">가족 사진첩</h1>
+          <div className="w-8 h-[1px] bg-[#924c0a] dark:bg-[#e2a265] mx-auto mt-6"></div>
         </div>
 
         {/* 로그인한 사용자만 보이는 업로드 컴포넌트 */}
@@ -84,7 +84,7 @@ export default function GalleryPage() {
               onClick={() => setSelectedPhoto(photo)}
               // 순차적인 애니메이션 지연(delay) 부여 및 클래스 적용
               style={{ animationDelay: `${index * 0.1}s` }}
-              className="animate-fade-in-up break-inside-avoid group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+              className="animate-fade-in-up break-inside-avoid group relative overflow-hidden bg-[#f5ece5] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded-xl shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
             >
               <img 
                 src={photo.src} 
@@ -92,29 +92,26 @@ export default function GalleryPage() {
                 className="w-full h-auto object-cover transition duration-700 group-hover:scale-105"
                 onError={(e) => { (e.target as any).src = 'https://via.placeholder.com/800x600?text=Photo' }}
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 text-white">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1f1b17]/80 via-[#1f1b17]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 text-white">
                 <p className="text-[10px] tracking-widest uppercase mb-1 opacity-80">{photo.desc}</p>
-                <h4 className="text-lg font-light">{photo.title}</h4>
+                <h4 className="text-lg font-serif font-normal">{photo.title}</h4>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/* 🔽 5. [신규 추가] 사진 확대 모달 (팝업) 부분 */}
-      {/* selectedPhoto가 null이 아닐 때(사진이 선택되었을 때)만 아래 코드가 나타납니다. */}
+      {/* 사진 확대 모달 */}
       {selectedPhoto && (
         <div 
-          // 🔽 배경을 클릭하면 팝업이 닫히도록 설정 (setSelectedPhoto(null))
           onClick={() => setSelectedPhoto(null)} 
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 transition-all duration-300 ease-in-out cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-[#1c1814]/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 transition-all duration-300 ease-in-out cursor-zoom-out"
         >
           {/* 닫기 버튼 */}
           <button className="absolute top-6 right-6 text-white text-3xl hover:scale-110 transition-transform">&times;</button>
           
-          {/* 확대된 이미지 (클릭해도 배경이 닫히지 않도록 e.stopPropagation() 추가) */}
-          <div className="relative max-w-7xl max-h-[85vh] overflow-hidden rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          {/* 확대된 이미지 */}
+          <div className="relative max-w-7xl max-h-[85vh] overflow-hidden rounded-lg shadow-2xl border border-[#f5ece5]/10" onClick={(e) => e.stopPropagation()}>
             <img 
               src={selectedPhoto.src} 
               alt={selectedPhoto.title}
@@ -124,12 +121,11 @@ export default function GalleryPage() {
 
           {/* 사진 정보 표시 */}
           <div className="mt-6 text-center text-white" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl font-light tracking-tight">{selectedPhoto.title}</h3>
+            <h3 className="text-xl font-serif font-normal tracking-tight">{selectedPhoto.title}</h3>
             <p className="text-sm text-gray-300 font-light mt-1">{selectedPhoto.desc}</p>
           </div>
         </div>
       )}
-      {/* ========================================================= */}
     </main>
   );
 }

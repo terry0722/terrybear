@@ -55,16 +55,16 @@ export default function Header() {
   // 현재 메뉴에 밑줄 하이라이트 표시 로직
   const getMenuClass = (path: string) => {
     return pathname === path 
-      ? 'font-semibold text-black dark:text-white border-b-2 border-black dark:border-white transition' 
-      : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition';
+      ? 'font-semibold text-[#924c0a] dark:text-[#e2a265] border-b-2 border-[#924c0a] dark:border-[#e2a265] transition' 
+      : 'text-[#18241b]/60 dark:text-[#f5ece5]/60 hover:text-[#924c0a] dark:hover:text-[#e2a265] transition';
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+    <nav className="fixed top-0 w-full z-50 bg-[#fff8f4]/80 dark:bg-[#1c1814]/80 backdrop-blur-md border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 md:gap-0">
         
         {/* 로고 영역 */}
-        <Link href="/" className="text-lg font-light tracking-[0.2em] uppercase text-black dark:text-white transition-colors duration-300">
+        <Link href="/" className="text-lg font-light tracking-[0.2em] uppercase text-[#18241b] dark:text-[#f5ece5] transition-colors duration-300 font-serif">
           Our Legacy
         </Link>
         
@@ -79,19 +79,19 @@ export default function Header() {
           
           {user ? (
             <div className="flex items-center gap-2 md:gap-4 ml-1 md:ml-2">
-              <span className="text-black dark:text-white font-bold border-b border-yellow-400 lowercase italic px-1">
+              <span className="text-[#18241b] dark:text-[#f5ece5] font-bold border-b border-[#924c0a] dark:border-[#e2a265] lowercase italic px-1">
                  {user.email?.split('@')[0]}
               </span>
-              <button onClick={handleLogout} className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition decoration-gray-200">Logout</button>
+              <button onClick={handleLogout} className="text-[#18241b]/60 dark:text-[#f5ece5]/60 hover:text-[#924c0a] dark:hover:text-[#e2a265] transition decoration-gray-200 cursor-pointer">Logout</button>
             </div>
           ) : (
-            <Link href="/login" className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition border-b border-black dark:border-white pb-0.5 ml-2">Login</Link>
+            <Link href="/login" className="text-[#18241b]/60 dark:text-[#f5ece5]/60 hover:text-[#924c0a] dark:hover:text-[#e2a265] transition border-b border-[#18241b] dark:border-[#f5ece5] pb-0.5 ml-2">Login</Link>
           )}
 
           {/* 다크모드 토글 버튼 */}
           <button 
             onClick={toggleDarkMode}
-            className="ml-2 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-300 transition-colors duration-300 hover:scale-110"
+            className="ml-2 w-6 h-6 flex items-center justify-center rounded-full bg-[#18241b]/5 dark:bg-[#f5ece5]/5 text-[#18241b] dark:text-[#e2a265] transition-colors duration-300 hover:scale-110 cursor-pointer"
             title="Toggle Dark Mode"
           >
             {isDarkMode ? '🌙' : '☀️'}

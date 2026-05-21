@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -8,7 +9,7 @@ import Link from 'next/link';
 export default function TravelWritePage() {
   const router = useRouter();
   const editorRef = useRef<HTMLDivElement>(null);
-  
+
   const [user, setUser] = useState<any>(null);
   const [location, setLocation] = useState('');
   const [title, setTitle] = useState('');
@@ -34,7 +35,7 @@ export default function TravelWritePage() {
       // contentEditable 영역에 수동으로 img 태그 삽입
       document.execCommand('insertHTML', false, `
         <div style="margin: 2rem 0; width: 100%;">
-          <img src="${url}" alt="Article Image" style="max-width: 100%; height: auto; display: block; border-radius: 4px;" />
+          <img src="${url}" alt="Article Image" style="max-width: 100%; height: auto; display: block; border-radius: 8px;" />
         </div>
         <p><br/></p>
       `);
@@ -54,7 +55,7 @@ export default function TravelWritePage() {
       return;
     }
     setIsPublishing(true);
-    
+
     const contentHtml = editorRef.current.innerHTML;
 
     // Supabase DB Insert
@@ -78,64 +79,92 @@ export default function TravelWritePage() {
     setIsPublishing(false);
   };
 
-  if (!user) return <div className="min-h-screen bg-[#111111] flex items-center justify-center text-white">Loading...</div>;
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] flex items-center justify-center text-[#924c0a] dark:text-[#e2a265] font-serif tracking-widest uppercase">
+        Loading...
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-[#111111] pb-32">
+    <main className="min-h-screen bg-[#fff8f4] dark:bg-[#1c1814] text-[#1f1b17] dark:text-[#f5ece5] pb-32 transition-colors duration-300">
       {/* 관리자(에디터) 상단 헤더 */}
-      <div className="w-full bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 p-4 sticky top-0 z-50 flex justify-between items-center px-4 md:px-12">
-        <Link href="/travel" className="text-sm font-bold uppercase tracking-widest text-black dark:text-white">← Back</Link>
+      <div className="w-full bg-[#fff8f4] dark:bg-[#1c1814] border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 p-4 sticky top-0 z-50 flex justify-between items-center px-4 md:px-12">
+        <Link href="/travel" className="text-xs font-semibold uppercase tracking-widest text-[#18241b]/50 dark:text-[#f5ece5]/50 hover:text-[#924c0a] dark:hover:text-[#e2a265]">
+          ← Back
+        </Link>
         <div className="flex gap-4">
-          <button onClick={handlePublish} disabled={isPublishing} className="bg-[#E0FF00] text-black px-6 py-2 text-sm font-bold border-2 border-black hover:bg-black hover:text-[#E0FF00] hover:border-[#E0FF00] transition disabled:opacity-50">
+          <button 
+            onClick={handlePublish} 
+            disabled={isPublishing} 
+            className="bg-[#924c0a] hover:bg-[#a35e19] text-[#fff8f4] dark:bg-[#e2a265] dark:text-[#1c1814] dark:hover:bg-[#f5ece5] px-6 py-2.5 text-xs font-semibold rounded uppercase tracking-widest transition-all disabled:opacity-50 cursor-pointer shadow-sm"
+          >
             {isPublishing ? 'PUBLISHING...' : '퍼블리시 ( 발행하기 )'}
           </button>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto mt-12 px-6">
-        <h1 className="text-3xl font-black mb-8 dark:text-white uppercase tracking-tight">The Edit : Article Writer</h1>
-        
+        <h1 className="text-3xl font-serif font-normal mb-8 text-[#18241b] dark:text-[#f5ece5] uppercase tracking-tight">The Edit : Article Writer</h1>
+
         {/* 입력 폼 */}
-        <div className="bg-white dark:bg-black p-8 border-2 border-black dark:border-gray-800 shadow-[8px_8px_0_0_rgba(0,0,0,1)] dark:shadow-[8px_8px_0_0_rgba(224,255,0,0.5)] mb-12 space-y-6">
-          <label className="block text-sm font-bold uppercase tracking-widest dark:text-[#E0FF00]">Location (ex. SINGAPORE)</label>
-          <input type="text" value={location} onChange={e=>setLocation(e.target.value)} className="w-full bg-transparent border-b-2 border-black dark:border-white p-2 text-2xl font-light dark:text-white focus:outline-none focus:border-[#E0FF00]" placeholder="여행지 이름" />
-          
-          <label className="block text-sm font-bold uppercase tracking-widest dark:text-[#E0FF00] pt-6">Main Title</label>
-          <input type="text" value={title} onChange={e=>setTitle(e.target.value)} className="w-full bg-transparent border-b-2 border-black dark:border-white p-2 text-4xl font-black dark:text-white focus:outline-none focus:border-[#E0FF00]" placeholder="기사 제목" />
+        <div className="bg-[#f5ece5] dark:bg-[#2a2420] p-8 border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded-xl shadow-sm mb-12 space-y-6">
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-widest text-[#924c0a] dark:text-[#e2a265] mb-2">Location (ex. SINGAPORE)</label>
+            <input 
+              type="text" 
+              value={location} 
+              onChange={e => setLocation(e.target.value)} 
+              className="w-full bg-transparent border-b border-[#18241b]/20 dark:border-[#f5ece5]/20 p-2 text-2xl font-light text-[#18241b] dark:text-[#f5ece5] focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265]" 
+              placeholder="여행지 이름" 
+            />
+          </div>
 
           <div className="pt-6">
-            <label className="block text-sm font-bold uppercase tracking-widest dark:text-[#E0FF00] mb-4">Cover Image (좌측 대형 이미지)</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-widest text-[#924c0a] dark:text-[#e2a265] mb-2">Main Title</label>
+            <input 
+              type="text" 
+              value={title} 
+              onChange={e => setTitle(e.target.value)} 
+              className="w-full bg-transparent border-b border-[#18241b]/20 dark:border-[#f5ece5]/20 p-2 text-3xl font-serif font-normal text-[#18241b] dark:text-[#f5ece5] focus:outline-none focus:border-[#924c0a] dark:focus:border-[#e2a265]" 
+              placeholder="기사 제목" 
+            />
+          </div>
+
+          <div className="pt-6">
+            <label className="block text-[10px] font-semibold uppercase tracking-widest text-[#924c0a] dark:text-[#e2a265] mb-4">Cover Image (좌측 대형 이미지)</label>
             {coverImage ? (
-              <img src={coverImage} alt="Cover" className="w-full h-[300px] object-cover mb-4 border border-black" />
+              <img src={coverImage} alt="Cover" className="w-full h-[300px] object-cover mb-4 border border-[#18241b]/10 rounded" />
             ) : null}
             <PhotoUpload bucketName="travel" folderPath="covers" onUploadSuccess={handleCoverUpload} />
           </div>
         </div>
 
         {/* 하단: 본문 웹 에디터 영역 */}
-        <div className="bg-white dark:bg-black border-2 border-black dark:border-gray-800 shadow-[8px_8px_0_0_rgba(0,0,0,1)] dark:shadow-[8px_8px_0_0_rgba(224,255,0,0.5)] overflow-hidden">
-           {/* 위지윅 툴바 */}
-           <div className="flex border-b-2 border-black dark:border-gray-800 bg-gray-100 dark:bg-gray-900 p-2 gap-2 flex-wrap items-center">
-             <button onClick={() => execCmd('bold')} className="w-10 h-10 font-bold bg-white dark:bg-black dark:text-white border border-gray-300 hover:bg-black hover:text-white transition">B</button>
-             <button onClick={() => execCmd('italic')} className="w-10 h-10 italic font-serif bg-white dark:bg-black dark:text-white border border-gray-300 hover:bg-black hover:text-white transition">I</button>
-             <button onClick={() => execCmd('underline')} className="w-10 h-10 underline bg-white dark:bg-black dark:text-white border border-gray-300 hover:bg-black hover:text-white transition">U</button>
-             <div className="w-[1px] h-6 bg-gray-300 mx-2"></div>
-             {/* 본문 사진 삽입 (PhotoUpload 재사용) */}
-             <div className="flex items-center text-xs dark:text-white">
-                <span className="mr-2">📸 본문에 사진 추가:</span>
-                <PhotoUpload bucketName="travel" folderPath="articles" onUploadSuccess={handleBodyImageUpload} />
-             </div>
-           </div>
-           
-           {/* 실제 에디터 영역 */}
-           <div 
-             ref={editorRef}
-             className="min-h-[500px] p-8 md:p-12 focus:outline-none dark:text-white prose dark:prose-invert max-w-none text-lg leading-[2] font-light break-keep"
-             contentEditable={true}
-             suppressContentEditableWarning={true}
-           >
-             여기에 여행 기행문을 멋지게 작성해 보세요...<br/><br/>
-           </div>
+        <div className="bg-[#f5ece5] dark:bg-[#2a2420] border border-[#18241b]/10 dark:border-[#f5ece5]/10 rounded-xl shadow-sm overflow-hidden">
+          {/* 위지윅 툴바 */}
+          <div className="flex border-b border-[#18241b]/10 dark:border-[#f5ece5]/10 bg-[#fff8f4]/50 dark:bg-[#1c1814]/50 p-2 gap-2 flex-wrap items-center">
+            <button onClick={() => execCmd('bold')} className="w-10 h-10 font-bold bg-[#fff8f4] dark:bg-[#1c1814] text-[#18241b] dark:text-[#f5ece5] border border-[#18241b]/10 dark:border-[#f5ece5]/10 hover:bg-[#924c0a] dark:hover:bg-[#e2a265] hover:text-[#fff8f4] dark:hover:text-[#1c1814] rounded transition font-sans cursor-pointer">B</button>
+            <button onClick={() => execCmd('italic')} className="w-10 h-10 italic bg-[#fff8f4] dark:bg-[#1c1814] text-[#18241b] dark:text-[#f5ece5] border border-[#18241b]/10 dark:border-[#f5ece5]/10 hover:bg-[#924c0a] dark:hover:bg-[#e2a265] hover:text-[#fff8f4] dark:hover:text-[#1c1814] rounded transition font-serif cursor-pointer">I</button>
+            <button onClick={() => execCmd('underline')} className="w-10 h-10 underline bg-[#fff8f4] dark:bg-[#1c1814] text-[#18241b] dark:text-[#f5ece5] border border-[#18241b]/10 dark:border-[#f5ece5]/10 hover:bg-[#924c0a] dark:hover:bg-[#e2a265] hover:text-[#fff8f4] dark:hover:text-[#1c1814] rounded transition font-sans cursor-pointer">U</button>
+            <div className="w-[1px] h-6 bg-[#18241b]/10 dark:bg-[#f5ece5]/10 mx-2"></div>
+            {/* 본문 사진 삽입 (PhotoUpload 재사용) */}
+            <div className="flex items-center text-xs text-[#18241b]/60 dark:text-[#f5ece5]/60">
+              <span className="mr-2">📸 본문에 사진 추가:</span>
+              <PhotoUpload bucketName="travel" folderPath="articles" onUploadSuccess={handleBodyImageUpload} />
+            </div>
+          </div>
+
+          {/* 실제 에디터 영역 */}
+          <div
+            ref={editorRef}
+            className="min-h-[500px] p-8 md:p-12 focus:outline-none text-[#18241b] dark:text-[#f5ece5] prose dark:prose-invert max-w-none text-base md:text-lg leading-[2] font-serif font-light break-keep"
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+          >
+            여기에 여행 기행문을 멋지게 작성해 보세요...<br /><br />
+          </div>
         </div>
       </div>
     </main>
